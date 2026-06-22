@@ -1,4 +1,8 @@
 spring.application.name=nit-agent
 ollama.base-url=http://localhost:11434
-ollama.model=llama3.1:8b
+ollama.model=qwen2.5-coder:14b
+ollama.fast-model=qwen2.5-coder:7b
 spring.jackson.property-naming-strategy=SNAKE_CASE
+spring.servlet.multipart.enabled=true
+spring.servlet.multipart.max-file-size=100MB
+spring.servlet.multipart.max-request-size=100MB
