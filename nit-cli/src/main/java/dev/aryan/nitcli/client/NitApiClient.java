@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.aryan.nitcli.config.NitConfig;
 
 import java.io.*;
-import java.net.*;
+import java.net.URI;
 import java.net.http.*;
 import java.nio.file.*;
 import java.time.Duration;
@@ -23,6 +23,16 @@ public class NitApiClient {
         this.baseUrl = config.getBackendUrl();
         this.generatorModel = config.getGeneratorModel();
         this.criticModel = config.getCriticModel();
+        this.http = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+        this.mapper = new ObjectMapper();
+    }
+
+    NitApiClient(String baseUrl, String generatorModel, String criticModel) {
+        this.baseUrl = baseUrl;
+        this.generatorModel = generatorModel;
+        this.criticModel = criticModel;
         this.http = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();

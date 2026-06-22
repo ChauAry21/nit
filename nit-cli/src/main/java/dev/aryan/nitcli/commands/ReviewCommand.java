@@ -7,7 +7,7 @@ import picocli.CommandLine.Parameters;
 
 import java.util.concurrent.Callable;
 
-@Command(name = "review", description = "Run a code review")
+@Command(name = "review", mixinStandardHelpOptions = true, description = "Run a code review")
 public class ReviewCommand implements Callable<Integer> {
 
     @Parameters(index = "0", arity = "0..1", description = "Local file or directory path to review")

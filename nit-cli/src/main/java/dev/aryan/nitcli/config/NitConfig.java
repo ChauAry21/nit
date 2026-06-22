@@ -1,16 +1,22 @@
 package dev.aryan.nitcli.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.*;
+import java.nio.file.*;
 import java.util.Properties;
 
 public class NitConfig {
 
-    private static final Path CONFIG_DIR = Path.of(System.getProperty("user.home"), ".nit");
-    private static final Path CONFIG_FILE = CONFIG_DIR.resolve("config.properties");
+    private static final String CONFIG_DIR_PROPERTY = "nit.config.dir";
+
+    private static Path getConfigDir() {
+        String override = System.getProperty(CONFIG_DIR_PROPERTY);
+        if (override != null) return Path.of(override);
+        return Path.of(System.getProperty("user.home"), ".nit");
+    }
+
+    private static Path getConfigFile() {
+        return getConfigDir().resolve("config.properties");
+    }
 
     private final Properties props;
 
@@ -25,8 +31,9 @@ public class NitConfig {
         } catch (IOException ignored) {}
 
         Properties props = new Properties(defaults);
-        if (Files.exists(CONFIG_FILE)) {
-            try (InputStream in = Files.newInputStream(CONFIG_FILE)) {
+        Path configFile = getConfigFile();
+        if (Files.exists(configFile)) {
+            try (InputStream in = Files.newInputStream(configFile)) {
                 props.load(in);
             } catch (IOException e) {
                 System.err.println("Warning: could not read config file: " + e.getMessage());
@@ -65,8 +72,9 @@ public class NitConfig {
 
     public void save() {
         try {
-            Files.createDirectories(CONFIG_DIR);
-            try (OutputStream out = Files.newOutputStream(CONFIG_FILE)) {
+            Path configDir = getConfigDir();
+            Files.createDirectories(configDir);
+            try (OutputStream out = Files.newOutputStream(configDir.resolve("config.properties"))) {
                 props.store(out, "nit CLI configuration");
             }
         } catch (IOException e) {
